@@ -17,6 +17,7 @@ use App\Http\Controllers\CategoryController;
 */
 
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/home-items', [CategoryController::class, 'front_index']);
 
 Route::middleware('auth:sanctum')->group(function(){
 

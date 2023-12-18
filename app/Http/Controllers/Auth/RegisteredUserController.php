@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Helpers\General;
+use App\Helpers\GeneralHelper;
+use App\Models\Newsletter;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,7 +20,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request, General $general)
+    public function store(Request $request, GeneralHelper $general)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -37,6 +38,14 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        $det_news = Newsletter::where("email", $request->email)->value("id");
+        if(!$det_news){
+            Newsletter::create([
+                'name' => $request->name,
+                'email' => $request->email
+            ]);
+        }
 
         $data = auth()->user();
         $data['token'] = $data->createToken($user->email)->plainTextToken;

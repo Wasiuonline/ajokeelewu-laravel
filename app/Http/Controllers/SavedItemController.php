@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\NewsletterRequest;
-use App\Models\Newsletter;
+use App\Models\SavedItem;
 use Illuminate\Http\Request;
 
-class NewsletterController extends Controller
+class SavedItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +18,7 @@ class NewsletterController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create()
     {
         //
     }
@@ -27,17 +26,15 @@ class NewsletterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(NewsletterRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->all();
-        Newsletter::create($data);
-        return response()->json("Newsletter subscription successful!");
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(NewsLetter $newsLetter)
+    public function show(SavedItem $savedItem)
     {
         //
     }
@@ -45,7 +42,7 @@ class NewsletterController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(NewsLetter $newsLetter)
+    public function edit(SavedItem $savedItem)
     {
         //
     }
@@ -53,7 +50,7 @@ class NewsletterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, NewsLetter $newsLetter)
+    public function update(Request $request, SavedItem $savedItem)
     {
         //
     }
@@ -61,7 +58,7 @@ class NewsletterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(NewsLetter $newsLetter)
+    public function destroy(SavedItem $savedItem)
     {
         //
     }

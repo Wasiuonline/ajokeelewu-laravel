@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('newsletters', function (Blueprint $table) {
+        Schema::create('items_sizes', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("email")->unique();
+            $table->foreignId('item_id')->default(0)->constrained('items', 'id')->onDelete('cascade');
+            $table->string("size");
+            $table->unsignedInteger("quantity")->default(0);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('news_letters');
+        Schema::dropIfExists('items_sizes');
     }
 };

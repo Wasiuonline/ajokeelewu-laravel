@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use App\Helpers\General;
+use App\Helpers\GeneralHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
@@ -16,7 +16,7 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
 
-    public function store(LoginRequest $request, General $general)
+    public function store(LoginRequest $request, GeneralHelper $general)
     {
         $request->authenticate();
 
@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request, General $general)
+    public function destroy(Request $request, GeneralHelper $general)
     {
         if($general->DetUser($request->header("mine"), $request->id)){
         $tokenId = explode("|", $request->header("token"));
