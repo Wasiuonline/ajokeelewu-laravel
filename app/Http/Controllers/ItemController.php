@@ -14,12 +14,10 @@ class ItemController extends Controller
      */
 
     public function front_index(){
-        $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "created_by")
-        ->with("status:id,category_id,name,slug")
+        $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "created_by", "item_status_id")
         ->where("item_status_id", "1")
-        ->with("status:id,item_status")
+        ->with("item_status:id,item_status")
         ->get();
-        $items["file_name"] = GeneralHelper::det_image("items-displayed/" . $items->id . "-" . $items->created_by . "-item-displayed-*.*", 0);
         return response()->json(ItemsResource::collection($items), 200);
     }
 

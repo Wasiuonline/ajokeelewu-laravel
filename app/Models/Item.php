@@ -19,7 +19,7 @@ class Item extends Model
     public function sizes(){
         return $this->hasMany(ItemsSize::class);
     }
-    public function status(){
+    public function item_status(){
         return $this->belongsTo(ItemStatus::class);
     }
 }

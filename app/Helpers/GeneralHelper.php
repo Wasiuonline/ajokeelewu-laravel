@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 class GeneralHelper{
 
     const BASIC_HEADER = "hskhbdjhdsbfvbfkjvbdskjbkjdsfbv";
+	const APP_CURR = "&#8358;";
 
     public static function DetToken($det_token)
     {
@@ -86,5 +87,23 @@ class GeneralHelper{
 		return $file_name;
 	}
 	
+	public static function formatPrice($amount){
+	$amountOriginal = $amount;
+	if($amountOriginal != ""){
+	$sign_left = ($amountOriginal < 0)?"(":"";
+	$sign_right = ($amountOriginal < 0)?")":"";
+	$amountOriginal = $sign_left . number_format(abs($amountOriginal), 2, '.', ',') . $sign_right;
+	}
+	return $amountOriginal;
+	}
+	
+	public static function formatQty($amount){
+	$amountOriginal = $amount;
+	if($amountOriginal != ""){
+	$amountOriginal = number_format($amountOriginal, 0, '', ',');
+	}
+	return $amountOriginal;
+	}
+		
 
 }
