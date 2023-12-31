@@ -35,16 +35,14 @@ class ItemController extends Controller
     $cat_name = GeneralHelper::in_table("categories",[['slug', '=', $cat_slug]],"name");
     $cat_id = GeneralHelper::in_table("categories",[['slug', '=', $cat_slug]],"id");
     $parent_id = GeneralHelper::in_table("categories",[['slug', '=', $cat_slug]],"category_id");
-
-    $categories = Category::select("name", "slug", "id")
-        ->where("category_id", "0")
-        ->with("subcategories:id,category_id,name,slug")
-        ->get();
-    $categories = CategoryResource::collection($categories);
+    $parent_name = GeneralHelper::in_table("categories",[['id', '=', $parent_id]],"name");
+    $category = ($cat_slug != "all")?"{$parent_name} - {$cat_name}":"All Products - Available";
 
     $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "item_qty", "created_by", "item_status_id", "category_id")
     ->where("item_status_id", "1")
-    //->where("category_id", $cat_id)
+    ->when($cat_slug != "all", function($cond_req) use ($cat_id){ 
+    $cond_req->where("category_id", $cat_id);
+    })
     ->with("item_status:id,item_status")
     ->with("sizes:item_id,size,quantity")
     //->with("category:id,name")
