@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Helpers\GeneralHelper;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ItemsResource;
+use App\Http\Resources\ItemsCollection;
+use App\Http\Resources\CategoryResource;
 
 class ItemController extends Controller
 {
@@ -13,12 +17,43 @@ class ItemController extends Controller
      * Display a listing of the resource.
      */
 
-    public function front_index(){
-        $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "created_by", "item_status_id")
+    public function front_index(Request $request){
+        $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "item_qty", "created_by", "item_status_id")
         ->where("item_status_id", "1")
         ->with("item_status:id,item_status")
+        ->with("sizes:item_id,size,quantity")
+        ->when(Auth::check(), function($cond_req){ 
+        $cond_req->withCount("saved_item");
+        })
+        ->limit("8")
+        ->orderBy("id", "desc")
         ->get();
         return response()->json(ItemsResource::collection($items), 200);
+    }
+
+    public function front_cat(Request $request, $cat_slug){
+    $cat_name = GeneralHelper::in_table("categories",[['slug', '=', $cat_slug]],"name");
+    $cat_id = GeneralHelper::in_table("categories",[['slug', '=', $cat_slug]],"id");
+    $parent_id = GeneralHelper::in_table("categories",[['slug', '=', $cat_slug]],"category_id");
+
+    $categories = Category::select("name", "slug", "id")
+        ->where("category_id", "0")
+        ->with("subcategories:id,category_id,name,slug")
+        ->get();
+    $categories = CategoryResource::collection($categories);
+
+    $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "item_qty", "created_by", "item_status_id", "category_id")
+    ->where("item_status_id", "1")
+    //->where("category_id", $cat_id)
+    ->with("item_status:id,item_status")
+    ->with("sizes:item_id,size,quantity")
+    //->with("category:id,name")
+    ->when(Auth::check(), function($cond_req){ 
+    $cond_req->withCount("saved_item");
+    })
+    ->orderBy("id", "desc")
+    ->get();
+    return response()->json((new ItemsCollection($items))->with_opt(4, $category), 200);
     }
 
     public function index()

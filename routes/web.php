@@ -23,6 +23,4 @@ Route::get('/', function () {
 
 Route::post("/newsletter", [NewsletterController::class, "store"]);
 
-
-
 require __DIR__.'/auth.php';

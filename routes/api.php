@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
@@ -19,8 +19,11 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/home-items', [ItemController::class, 'front_index']);
+Route::get('/cat/{cat_slug}', [ItemController::class, 'front_cat']);
 
 Route::middleware('auth:sanctum')->group(function(){
+    Route::get('/users-home-items', [ItemController::class, 'front_index']);
+    Route::get('/users-cat/{cat_slug}', [ItemController::class, 'front_cat']);
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
