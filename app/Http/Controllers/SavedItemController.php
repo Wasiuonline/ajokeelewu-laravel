@@ -4,9 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\SavedItem;
 use Illuminate\Http\Request;
+use App\Helpers\GeneralHelper;
 
 class SavedItemController extends Controller
 {
+
+    public function front_save(Request $request, $item_id)
+    {
+        $det_saved_id = GeneralHelper::in_table("saved_items",[['item_id', '=', $item_id], ['user_id', '=', auth()->user()->id]],"id");
+        if($det_saved_id){
+            SavedItem::where('id', $det_saved_id)->delete();
+        }else{
+            $formFields = $request->validate([
+                'item_id' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/'
+            ]);	
+            $formFields["user_id"] = auth()->user()->id;
+            SavedItem::create($formFields);
+        }
+    }
     /**
      * Display a listing of the resource.
      */

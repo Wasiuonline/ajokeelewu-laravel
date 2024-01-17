@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\SavedItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::get('/cat/{cat_slug}', [ItemController::class, 'front_cat']);
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/users-home-items', [ItemController::class, 'front_index']);
     Route::get('/users-cat/{cat_slug}', [ItemController::class, 'front_cat']);
+    Route::get('/save-item/{item_id}', [SavedItemController::class, 'front_save']);
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
