@@ -21,10 +21,12 @@ use App\Http\Controllers\SavedItemController;
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/home-items', [ItemController::class, 'front_index']);
 Route::get('/cat/{cat_slug}', [ItemController::class, 'front_cat']);
+Route::get('/details/{item_slug}', [ItemController::class, 'front_item']);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/users-home-items', [ItemController::class, 'front_index']);
     Route::get('/users-cat/{cat_slug}', [ItemController::class, 'front_cat']);
+    Route::get('/users-details/{item_slug}', [ItemController::class, 'front_item']);
     Route::get('/save-item/{item_id}', [SavedItemController::class, 'front_save']);
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);

@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\URL;
 
 class GeneralHelper{
 
@@ -57,7 +58,7 @@ class GeneralHelper{
 		return $broken_data;
 	}
     
-    public static function det_all_images($data)
+    public static function det_all_images($data, $to_url = 0)
 	{
 		$file_name = array();
 		$data = public_path("images/{$data}");
@@ -66,7 +67,7 @@ class GeneralHelper{
 			foreach ($file_array as $value) {
 				$temp_name = explode("/", $value);
 				$temp_name = array_slice($temp_name, -2, 2, false);
-				$file_name[] = "images/" . implode("/", $temp_name);
+				$file_name[] = $to_url ? URL::to("images/" . implode("/", $temp_name)) : "images/" . implode("/", $temp_name);
 			}
 			return $file_name;
 		}
@@ -85,6 +86,10 @@ class GeneralHelper{
 			$file_name = "images/post.jpg";
 		}
 		return $file_name;
+	}
+
+	public static function decode_content($data){
+	return html_entity_decode($data, ENT_QUOTES);
 	}
 	
 	public static function formatPrice($amount){

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ItemsResource;
 use App\Http\Resources\ItemsCollection;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\FrontDetailsResource;
 
 class ItemController extends Controller
 {
@@ -21,7 +22,7 @@ class ItemController extends Controller
         $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "item_qty", "created_by", "item_status_id")
         ->where("item_status_id", "1")
         ->with("item_status:id,item_status")
-        ->with("sizes:item_id,size,quantity")
+        ->with("sizes:id,item_id,size,quantity")
         ->when(Auth::check(), function($cond_req){ 
         $cond_req->withCount("saved_item");
         })
@@ -44,14 +45,51 @@ class ItemController extends Controller
     $cond_req->where("category_id", $cat_id);
     })
     ->with("item_status:id,item_status")
-    ->with("sizes:item_id,size,quantity")
+    ->with("sizes:id,item_id,size,quantity")
     //->with("category:id,name")
     ->when(Auth::check(), function($cond_req){ 
     $cond_req->withCount("saved_item");
     })
     ->orderBy("id", "desc")
     ->get();
-    return response()->json((new ItemsCollection($items))->with_opt(4, $category), 200);
+    return response()->json((new ItemsCollection($items))->with_opt(8, $category), 200);
+    }
+
+    public function front_item(Request $request, $item_slug){
+    
+    $item_id = GeneralHelper::in_table("items",[['item_slug', '=', $item_slug]],"id");
+    $item_name = GeneralHelper::in_table("items",[['item_slug', '=', $item_slug]],"item_name");
+    $cat_id = GeneralHelper::in_table("items",[['item_slug', '=', $item_slug]],"category_id");
+    $cat_name = GeneralHelper::in_table("categories",[['id', '=', $cat_id]],"name");
+    $cat_slug = GeneralHelper::in_table("categories",[['id', '=', $cat_id]],"slug");
+    $parent_id = GeneralHelper::in_table("categories",[['id', '=', $cat_id]],"category_id");
+    $parent_name = GeneralHelper::in_table("categories",[['id', '=', $parent_id]],"name");
+    $category = "{$parent_name} - {$cat_name} - {$cat_slug} - {$item_name}";
+
+    $item_details = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "item_qty", "created_by", "item_status_id", "category_id", "item_details")
+    ->where("item_slug", $item_slug)
+    ->where("item_status_id", "1")
+    ->with("item_status:id,item_status")
+    ->with("sizes:id,item_id,size,quantity")
+    ->when(Auth::check(), function($cond_req){ 
+    $cond_req->withCount("saved_item");
+    })
+    ->first();
+    $item_details = new FrontDetailsResource($item_details);
+
+    $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "item_qty", "created_by", "item_status_id", "category_id")
+    ->where("item_status_id", "1")
+    ->where("category_id", $cat_id)
+    ->whereNot("id", $item_id)
+    ->with("item_status:id,item_status")
+    ->with("sizes:id,item_id,size,quantity")
+    ->when(Auth::check(), function($cond_req){ 
+    $cond_req->withCount("saved_item");
+    })
+    ->orderBy("id", "desc")
+    ->get();
+    
+    return response()->json((new ItemsCollection($items))->with_opt(4, $category, $item_details), 200);
     }
 
     public function index()
