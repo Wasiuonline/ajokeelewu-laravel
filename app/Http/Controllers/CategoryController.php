@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CategoryCollection;
 
 class CategoryController extends Controller
 {
@@ -17,7 +17,7 @@ class CategoryController extends Controller
         //     $query->withCount("items")
         // }])
         ->get();
-        return response()->json(CategoryResource::collection($categories), 200);
+        return response()->json((new CategoryCollection($categories))->with_opt(), 200);
     }
 
 }
