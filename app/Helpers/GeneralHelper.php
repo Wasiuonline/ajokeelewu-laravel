@@ -10,6 +10,7 @@ class GeneralHelper{
 
     const BASIC_HEADER = "hskhbdjhdsbfvbfkjvbdskjbkjdsfbv";
 	const APP_CURR = "&#8358;";
+	const GEN_NAME = "Ajoke Elewu";
 
     public static function DetToken($det_token)
     {
@@ -24,6 +25,24 @@ class GeneralHelper{
             return true;
         }
     }
+
+	public static function gen($data)
+	{
+		switch ($data) {
+			case "date":
+				return date("Y-m-d", time());
+			case "date_time":
+				return date("Y-m-d H:i:s", time());
+			case "ticket_id":
+				return date("YmdHis", time());
+			case "trans_ref":
+				return "ajo" . time() . rand(100,999) . "ke";
+			case "rand_no":
+				return rand(1000, 9999);
+			case "regards":
+				return "<p>&nbsp;</p><p>Regards,<br>" . self::GEN_NAME . " Team.</p>";
+		}
+	}
 
     public static function in_table($table, $where, $return)
 	{
