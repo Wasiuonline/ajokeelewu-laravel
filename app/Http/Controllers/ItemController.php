@@ -11,6 +11,7 @@ use App\Http\Resources\ItemsResource;
 use App\Http\Resources\ItemsCollection;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FrontDetailsResource;
+use App\Http\Resources\SearchResource;
 
 class ItemController extends Controller
 {
@@ -91,6 +92,16 @@ class ItemController extends Controller
     
     return response()->json((new ItemsCollection($items))->with_opt(4, $category, $item_details), 200);
     }
+
+    public function front_search(Request $request){
+    $items = Item::select("id", "item_name", "item_old_price", "item_price", "item_slug", "created_by")
+    ->where("item_status_id", "1")
+    ->where("item_name", "LIKE", "%" . $request->search . "%")
+    ->orderBy("id", "desc")
+    ->limit(8)
+    ->get();
+    return response()->json(SearchResource::collection($items), 200);
+    }    
 
     public function index()
     {

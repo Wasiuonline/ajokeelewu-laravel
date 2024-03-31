@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
@@ -24,5 +25,6 @@ Route::get('/', function () {
 
 Route::post("/newsletter", [NewsletterController::class, "store"]);
 Route::post("/contact", [ContactController::class, "store"]);
+Route::post("/search", [ItemController::class, "front_search"]);
 
 require __DIR__.'/auth.php';
